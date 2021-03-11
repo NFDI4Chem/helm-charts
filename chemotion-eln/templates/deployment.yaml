@@ -27,6 +27,13 @@ spec:
       serviceAccountName: {{ include "chemotion-eln.serviceAccountName" . }}
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      initContainers:
+        - name: postgres-listener
+          image: alpine
+          command:
+            - sh
+            - -c
+            - for i in $(seq 1 200); do nc -z -w3 postgresql 5432 && exit 0 || sleep $((2*i)); echo -n "." ; done; exit 1
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
@@ -45,20 +52,19 @@ spec:
           - name: SECRET_KEY_BASE
             value: my_s3cr3t_k3y
           command: ["/bin/bash","-ic"]
-          #args: ["sleep 3600"]
           args: ["cd /home/app/chemotion_ELN/ && touch config/datacollectors.yml && mkdir -p public/images/samples && npm i && source /usr/local/nvm/nvm.sh && cd node_modules/@novnc/noVNC && npx babel-upgrade --write && npm i && npm i pako && npm i @babel/preset-env && mkdir -p utils && curl https://raw.githubusercontent.com/novnc/noVNC/master/utils/use_require.js > utils/use_require.js && node utils/use_require.js --clean && rake db:create && rake db:migrate && rake db:seed && rake assets:precompile && cd /home/app/chemotion_ELN/ && ./run.sh postgres"]
           ports:
             - name: http
               containerPort: 3000
               protocol: TCP
-          # livenessProbe:
-          #   httpGet:
-          #     path: /images/favicon.ico
-          #     port: http
-          # readinessProbe:
-          #   httpGet:
-          #     path: /images/favicon.ico
-          #     port: http
+          livenessProbe:
+            httpGet:
+              path: /home
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /home
+              port: http
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
