@@ -33,7 +33,7 @@ spec:
           command:
             - sh
             - -c
-            - for i in $(seq 1 200); do nc -z -w3 postgresql 5432 && exit 0 || sleep $((2*i)); echo -n "." ; done; exit 1
+            - for i in $(seq 1 200); do nc -z -w3 postgres 5432 && exit 0 || sleep $((2*i)); echo -n "." ; done; exit 1
       containers:
         - name: {{ .Chart.Name }}
           securityContext:
