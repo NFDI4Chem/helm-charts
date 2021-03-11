@@ -60,11 +60,17 @@ spec:
           livenessProbe:
             httpGet:
               path: /home
-              port: http
+              port: 3000
           readinessProbe:
             httpGet:
               path: /home
-              port: http
+              port: 3000
+          startupProbe:
+            httpGet:
+              path: /home
+              port: 3000
+              failureThreshold: 60
+              periodSeconds: 10
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       {{- with .Values.nodeSelector }}
