@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "chemotion-eln.fullname" . }}
+  labels:
+    {{- include "chemotion-eln.labels" . | nindent 4 }}
+spec:
+  {{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+  {{- end }}
+  selector:
+    matchLabels:
+      {{- include "chemotion-eln.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+      {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      labels:
+        {{- include "chemotion-eln.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "chemotion-eln.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: {{ .Chart.Name }}
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          env:
+          - name: DATABASE_URL
+            value: postgres://postgres:3x4mpl3@postgres:5432/chemotion_production
+          - name: DOCKER
+            value: "true"
+          - name: PGPASSWORD
+            value: 3x4mpl3
+          - name: RAILS_ENV
+            value: production
+          - name: SECRET_KEY_BASE
+            value: my_s3cr3t_k3y
+          command: ["/bin/bash","-ic"]
+          #args: ["sleep 3600"]
+          args: ["cd /home/app/chemotion_ELN/ && touch config/datacollectors.yml && mkdir -p public/images/samples && npm i && source /usr/local/nvm/nvm.sh && cd node_modules/@novnc/noVNC && npx babel-upgrade --write && npm i && npm i pako && npm i @babel/preset-env && mkdir -p utils && curl https://raw.githubusercontent.com/novnc/noVNC/master/utils/use_require.js > utils/use_require.js && node utils/use_require.js --clean && rake db:create && rake db:migrate && rake db:seed && rake assets:precompile && cd /home/app/chemotion_ELN/ && ./run.sh postgres"]
+          ports:
+            - name: http
+              containerPort: 3000
+              protocol: TCP
+          # livenessProbe:
+          #   httpGet:
+          #     path: /images/favicon.ico
+          #     port: http
+          # readinessProbe:
+          #   httpGet:
+          #     path: /images/favicon.ico
+          #     port: http
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
