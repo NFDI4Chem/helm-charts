@@ -2,7 +2,7 @@
 kind: PersistentVolumeClaim
 apiVersion: v1
 metadata:
-  name: upload
+  name: pvc-upload
   #name: {{ include "atmoz-sftp.fullname" . }}
 spec:
   accessModes:

@@ -35,11 +35,9 @@ spec:
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           args:
             - "{{ .Values.userstring }}"
-          {{- if .Values.persistence.enabled }}
           volumeMounts:
           - name: upload
             mountPath: {{ .Values.persistence.mountPath }}
-          {{- end }}
           ports:
             - name: ssh
               containerPort: 22
@@ -47,13 +45,20 @@ spec:
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
+{{- if .Values.persistence.enabled }}
         - name: upload
-          {{- if .Values.persistence.enabled }}
           persistentVolumeClaim:
-            claimName: upload
-          {{- else }}
+{{- if .Values.persistence.existingClaim }}
+{{- with .Values.persistence.existingClaim }}
+            claimName: {{ tpl . $ }}
+{{- end }}
+{{- else }}
+            claimName: pvc-upload
+{{- end }}
+{{- else if not .Values.persistence.enabled }}
+        - name: upload
           emptyDir: {}
-          {{- end }}
+{{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}

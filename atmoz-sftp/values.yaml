@@ -26,7 +26,7 @@ fullnameOverride: ""
 ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
 ##
 persistence:
-  enabled: true
+  enabled: false
   ## atmoz-sftp data Persistent Volume Storage Class
   ## If defined, storageClassName: <storageClass>
   ## If set to "-", storageClassName: "", which disables dynamic provisioning
@@ -49,7 +49,7 @@ persistence:
   ## If defined, PVC must be created manually before volume will be bound
   ##
   #existingClaim: ""
-  existingClaim: "data-chemotion-postgresql-0"
+  #existingClaim: "data-chemotion-postgresql-0"
 
 ## https://github.com/atmoz/sftp/blob/master/README.md
 userstring: "sftp_test:sftp_test:::uploads"
