@@ -4,6 +4,14 @@
 
 replicaCount: 1
 
+## String to partially override common.names.fullname template (will maintain the release name)
+##
+# nameOverride:
+
+## String to fully override common.names.fullname template
+##
+# fullnameOverride:
+
 image:
   repository: atmoz/sftp
   pullPolicy: IfNotPresent
@@ -13,6 +21,38 @@ image:
 imagePullSecrets: []
 nameOverride: ""
 fullnameOverride: ""
+
+## Enable persistence using Persistent Volume Claims
+## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+##
+persistence:
+  enabled: true
+  ## atmoz-sftp data Persistent Volume Storage Class
+  ## If defined, storageClassName: <storageClass>
+  ## If set to "-", storageClassName: "", which disables dynamic provisioning
+  ## If undefined (the default) or set to null, no storageClassName spec is
+  ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+  ##   GKE, AWS & OpenStack)
+  ##
+  # storageClass: "-"
+  ## Persistent Volume Access Mode
+  ##
+  accessModes:
+    - ReadWriteOnce
+  ## Persistent Volume size
+  ##
+  size: 1Gi
+  mountPath: "/home/sftp_test/uploads"
+
+  ## A manually managed Persistent Volume and Claim
+  ## Requires persistence.enabled: true
+  ## If defined, PVC must be created manually before volume will be bound
+  ##
+  #existingClaim: ""
+  existingClaim: "data-chemotion-postgresql-0"
+
+## https://github.com/atmoz/sftp/blob/master/README.md
+userstring: "sftp_test:sftp_test:::uploads"
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -37,11 +77,12 @@ securityContext: {}
   # runAsUser: 1000
 
 service:
-  type: LoadBalancer
+  #type: LoadBalancer
+  type: NodePort
   port: 22
 
 ingress:
-  enabled: true
+  enabled: false
   annotations: {}
     # kubernetes.io/ingress.class: nginx
     # kubernetes.io/tls-acme: "true"

@@ -34,13 +34,26 @@ spec:
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           args:
-            - sftp_test:sftp_test:::uploads          
+            - "{{ .Values.userstring }}"
+          {{- if .Values.persistence.enabled }}
+          volumeMounts:
+          - name: upload
+            mountPath: {{ .Values.persistence.mountPath }}
+          {{- end }}
           ports:
             - name: ssh
               containerPort: 22
               protocol: TCP
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+        - name: upload
+          {{- if .Values.persistence.enabled }}
+          persistentVolumeClaim:
+            claimName: upload
+          {{- else }}
+          emptyDir: {}
+          {{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
