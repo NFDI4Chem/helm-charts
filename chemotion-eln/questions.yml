@@ -12,6 +12,11 @@ questions:
   show_subquestion_if: false
   group: "Container Images"
   subquestions:
+  - variable: dummy
+    default: "blank"
+    description: "Intentionally left blank for better layout"
+    type: string
+    label: Empty question
   - variable: image.repository
     default: "complat/chemotion_eln"
     description: "Chemotion ELN image name"
