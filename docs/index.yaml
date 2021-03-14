@@ -3,7 +3,7 @@ entries:
   atmoz-sftp:
   - apiVersion: v2
     appVersion: "10"
-    created: "2021-03-14T18:47:17.42719208+01:00"
+    created: "2021-03-14T18:54:13.735520575+01:00"
     description: A Helm chart for SFTP
     digest: c9394395d27c803a24d191099a68d7a4644d120fa499376919e0d6d56f1f456d
     icon: https://raw.githubusercontent.com/atmoz/sftp/master/openssh.png
@@ -14,11 +14,7 @@ entries:
     version: 0.1.2
   - apiVersion: v2
     appVersion: 1.16.0
-<<<<<<< HEAD
-    created: "2021-03-14T18:47:17.426233092+01:00"
-=======
-    created: "2021-03-14T18:42:10.450846349+01:00"
->>>>>>> c52bbba48880dc408536ab58c481e993785ab37e
+    created: "2021-03-14T18:54:13.733537958+01:00"
     description: A Helm chart for SFTP
     digest: df8a868a841286fcdc7f510effd224b1f5330ff3f66cd51ff75d014a375c487a
     icon: https://raw.githubusercontent.com/atmoz/sftp/master/openssh.png
@@ -27,8 +23,4 @@ entries:
     urls:
     - https://nfdi4chem.github.io/helm-charts/atmoz-sftp-0.1.1.tgz
     version: 0.1.1
-<<<<<<< HEAD
-generated: "2021-03-14T18:47:17.425241177+01:00"
-=======
-generated: "2021-03-14T18:42:10.449844573+01:00"
->>>>>>> c52bbba48880dc408536ab58c481e993785ab37e
+generated: "2021-03-14T18:54:13.732615049+01:00"
