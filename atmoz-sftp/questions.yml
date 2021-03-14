@@ -1,0 +1,79 @@
+labels:
+  io.cattle.role: cluster # options are cluster/project
+  io.rancher.app_min_version: 0.0.0 # Hide deprecated/unsupported versions
+categories:
+- Data transfer
+questions:
+- variable: defaultImage
+  default: true
+  description: "Use default Docker image"
+  label: Use Default Image
+  type: boolean
+  show_subquestion_if: false
+  group: "Container Images"
+  subquestions:
+  - variable: image.repository
+    default: "atmoz/sftp"
+    description: "Atmoz SFTP image name"
+    type: string
+    label: Atmoz SFTP image name
+  - variable: image.tag
+    default: "latest"
+    description: "Image tag"
+    type: string
+    label: Image Tag
+- variable: sftp.userstring
+  default: "sftp_test:sftp_test:::uploads"
+  description: "SFTP User, password and directory settings."
+  type: string
+  label: SFTP Userstring
+- variable: persistence.enabled
+  default: false
+  description: "Enable persistent volume for SFTP"
+  type: boolean
+  required: true
+  label: SFTP Persistent Volume Enabled
+  show_subquestion_if: true
+  subquestions:
+  - variable: persistence.size
+    default: "10Gi"
+    description: "SFTP Persistent Volume Size"
+    type: string
+    label: SFTP Volume Size
+  - variable: persistence.storageClass
+    default: ""
+    description: "If undefined or null, uses the default StorageClass. Default to null"
+    type: storageclass
+    label: Default StorageClass for Chemotion ELN
+  - variable: persistence.existingClaim
+    default: ""
+    description: "If not empty, uses the specified existing PVC instead of creating new one"
+    type: pvc
+    label: Existing Persistent Volume Claim for SFTP
+- variable: ingress.enabled
+  default: false
+  description: "Expose app using Layer 4 TCP Load Balancer - ingress"
+  type: boolean
+  label: Expose app using Layer 4 TCP Load Balancer
+  show_subquestion_if: true
+  group: "Services and Load Balancing"
+  subquestions:
+  - variable: ingress.hostname
+    default: "nip.io"
+    description: "Hostname to your SFTP installation"
+    type: hostname
+    required: true
+    label: Hostname
+- variable: service.type
+  default: "NodePort"
+  description: "SFTP Service type"
+  type: enum
+  show_if: "ingress.enabled=false"
+  options:
+  - "ClusterIP"
+  - "NodePort"
+  - "LoadBalancer"
+  required: true
+  label: "SFTP Service type"
+  show_subquestion_if: "NodePort"
+  group: "Services and Load Balancing"
