@@ -1,0 +1,176 @@
+labels:
+  io.cattle.role: cluster # options are cluster/project
+  io.rancher.app_min_version: 0.0.0 # Hide deprecated/unsupported versions
+categories:
+- Chemistry
+questions:
+- variable: defaultImage
+  default: true
+  description: "Use default Docker image"
+  label: Use Default Image
+  type: boolean
+  show_subquestion_if: false
+  group: "Container Images"
+  subquestions:
+  - variable: image.repository
+    default: "complat/chemotion_eln"
+    description: "Chemotion ELN image name"
+    type: string
+    label: Chemotion ELN Image Name
+  - variable: image.tag
+    default: "latest"
+    description: "Chemotion ELN image tag"
+    type: string
+    label: Image Tag
+
+  - variable: postgres.image.repository
+    default: "postgres"
+    description: "PostgreSQL image name"
+    type: string
+    label: PostgreSQL Image Name
+  - variable: postgres.image.tag
+    default: "10.10"
+    description: "PostgreSQL image tag"
+    type: string
+    label: PostgreSQL Image Tag
+
+- variable: ChemotionELNAdminUsername
+  default: "ADM"
+  description: "Admin User of the application"
+  type: string
+  required: true
+  label: Chemotion ELN Usernname
+  group: "Chemotion ELN Settings"
+- variable: ChemotionELNPassword
+  default: ""
+  description: "password will be auto-generated if not specified"
+  type: password
+  label: Chemotion ELN Password
+  group: "Chemotion ELN Settings"
+- variable: ChemotionELNAdminEmail
+  default: "user@example.com"
+  description: "Admin email"
+  type: string
+  required: true
+  label: Chemotion ELN Admin Email
+  group: "Chemotion ELN Settings"
+
+- variable: postgres.enabled
+  default: true
+  description: "Deploy a database server as part of this deployment, or set to false and configure an external database connection."
+  type: boolean
+  required: true
+  label: Install PostgreSQL
+  show_subquestion_if: true
+  group: "Database Settings"
+  subquestions:
+  - variable: postgres.db.name
+    default: "chemotion_production"
+    description: "Database name to create"
+    type: string
+    label: PostgreSQL Database
+  - variable: postgres.db.user
+    default: "postgres"
+    description: "Database user to create"
+    type: string
+    label: PostgreSQL User
+  - variable: postgres.db.password
+    default: "3x4mpl3"
+    description: "password will be auto-generated if not specified"
+    type: password
+    label: PostgreSQL Password
+
+- variable: externalDatabase.url
+  default: "postgres://postgres:3x4mpl3@postgres:5432/chemotion_production"
+  description: "Host of the external database"
+  type: string
+  label: External Database Host
+  show_if: "postgres.enabled=false"
+  group: "Database Settings"
+- variable: postgresql.persistence.enabled
+  default: false
+  description: "Enable persistent volume for PostgreSQL"
+  type: boolean
+  required: true
+  label: PostgreSQL Persistent Volume Enabled
+  show_if: "postgres.enabled=true"
+  show_subquestion_if: true
+  group: "Database Settings"
+  subquestions:
+  - variable: postgresqlpersistence.size
+    default: "1Gi"
+    description: "PostgreSQL Persistent Volume Size"
+    type: string
+    label: PostgreSQL Volume Size
+  - variable: postgresql.persistence.storageClass
+    default: ""
+    description: "If undefined or null, uses the default StorageClass. Default to null"
+    type: storageclass
+    label: Default StorageClass for PostgreSQL
+- variable: persistence.enabled
+  default: true
+  description: "Enable persistent volume for Chemotion ELN"
+  type: boolean
+  required: true
+  label: Chemotion ELN Persistent Volume Enabled
+  show_subquestion_if: true
+  group: "Chemotion ELN Settings"
+  subquestions:
+  - variable: persistence.size
+    default: "5Gi"
+    description: "Chemotion ELN Persistent Volume Size"
+    type: string
+    label: Chemotion ELN Volume Size
+  - variable: persistence.storageClass
+    default: ""
+    description: "If undefined or null, uses the default StorageClass. Default to null"
+    type: storageclass
+    label: Default StorageClass for Chemotion ELN
+  - variable: persistence.existingClaim
+    default: ""
+    description: "If not empty, uses the specified existing PVC instead of creating new one"
+    type: pvc
+    label: Existing Persistent Volume Claim for Chemotion ELN
+
+- variable: atmoz-sftp.enabled
+  default: true
+  description: "Deploy an SFTP server as part of this deployment for large "
+  type: boolean
+  required: true
+  label: Install SFTP
+  show_subquestion_if: true
+  group: "SFTP Settings"
+  subquestions:
+  - variable: atmoz-sftp.userstring
+    default: "sftp_test:sftp_test:::uploads"
+    description: "SFTP User, password and directory settings."
+    type: string
+    label: SFTP Userstring
+
+- variable: ingress.enabled
+  default: true
+  description: "Expose app using Layer 7 Load Balancer - ingress"
+  type: boolean
+  label: Expose app using Layer 7 Load Balancer
+  show_subquestion_if: true
+  group: "Services and Load Balancing"
+  subquestions:
+  - variable: ingress.hostname
+    default: "nip.io"
+    description: "Hostname to your Chemotion ELN installation"
+    type: hostname
+    required: true
+    label: Hostname
+- variable: service.type
+  default: "NodePort"
+  description: "Chemotion ELN Service type"
+  type: enum
+  show_if: "ingress.enabled=false"
+  options:
+  - "ClusterIP"
+  - "NodePort"
+  - "LoadBalancer"
+  required: true
+  label: Chemotion ELN Service Type
+  show_subquestion_if: "NodePort"
+  group: "Services and Load Balancing"

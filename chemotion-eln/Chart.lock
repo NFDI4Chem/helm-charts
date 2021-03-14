@@ -2,5 +2,8 @@ dependencies:
 - name: postgresql
   repository: https://charts.bitnami.com/bitnami
   version: 10.1.4
-digest: sha256:ebcbbac4e6e4147ef14b2efe3138733ebaf9ed5cfc7dec7f56079ee26224eea3
-generated: "2021-03-11T14:07:12.705538086+01:00"
+- name: atmoz-sftp
+  repository: https://nfdi4chem.github.io/helm-charts
+  version: 0.1.2
+digest: sha256:cf16a34ead9dcd53b4c1341ee7290abe235680dd7c91cc71ef9c89edb2cadd3c
+generated: "2021-03-14T19:03:38.427832342+01:00"

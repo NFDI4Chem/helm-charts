@@ -2,6 +2,10 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+global:
+  # https://helm.sh/docs/chart_template_guide/subcharts_and_globals/
+  nothingyet: "TBD"
+
 replicaCount: 1
 
 image:
@@ -10,18 +14,55 @@ image:
   # Overrides the image tag whose default is the chart appVersion.
   tag: "latest"
 
-imagePullSecrets: []
-nameOverride: ""
-fullnameOverride: ""
+#imagePullSecrets: []
+#nameOverride: ""
+#fullnameOverride: ""
 
+## Note that Chemotion uses postgres
+## and the actual bitnami chart postgresql
+## so they are NOT automagically in sync !!!
+postgres:
+  enabled: yes
+  db.name: "chemotion_production"
+  db.user: "postgres"
+  db.password: "3x4mpl3"
+
+## TODO: Join postgresql.postgresqlPassword
+## and postgres.db.password
 postgresql:
   fullnameOverride: postgres
   postgresqlPassword: "3x4mpl3"
   persistence:
     enabled: yes
     size: "1Gi"
-    storageClassName: "longhorn"
-#  initdbScriptsConfigMap: configmapscripts
+#   storageClassName: "longhorn"
+#   initdbScriptsConfigMap: configmapscripts
+
+atmoz-sftp:
+  enabled: yes
+  userstring: "sftp_test:sftp_test:::uploads"
+  persistence:
+    enabled: yes
+    size: "2Gi"
+    mountPath: "/home/sftp_test/uploads"
+
+chemotion:
+  persistence:
+    enabled: true
+    ## Chemotion ELN data Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    ##
+    # storageClass: "-"
+    ##
+    ## If you want to reuse an existing claim, you can pass the name of the PVC using
+    ## the existingClaim variable
+    # existingClaim: your-claim
+    accessMode: ReadWriteOnce ## STN: Does Chemotion need ReadWriteMany if scaled ?
+    size: 2Gi
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -45,42 +86,47 @@ securityContext: {}
   # runAsNonRoot: true
   # runAsUser: 1000
 
-service:
-  type: NodePort
-  port: 3000
-
-ingress:
-  enabled: true
-  annotations:
-    kubernetes.io/ingress.class: gce
-    kubernetes.io/ingress.allow-http: 'yes'
-  hosts:
-    - host: chemotion.35.190.93.43.nip.io
-      paths:
-      - path: /*
-        backend:
-          service:
-            name: app
-            port:
-              number: 3000
-
+##
+## This block seems to work on Google GKE
+##
 # service:
-#   type: ClusterIP
+#   type: NodePort
 #   port: 3000
 # ingress:
 #   enabled: true
 #   annotations:
-#     # kubernetes.io/ingress.class: nginx
-#     # kubernetes.io/tls-acme: "true"
+#     kubernetes.io/ingress.class: gce
+#     kubernetes.io/ingress.allow-http: 'yes'
 #   hosts:
-#     - host: chemotion.134.176.27.161.nip.io ## deNBI Giessen
+#     - host: chemotion.35.190.93.43.nip.io
 #       paths:
-#       - path: /
+#       - path: /*
 #         backend:
 #           service:
 #             name: app
 #             port:
 #               number: 3000
+
+##
+## This block seems to work on deNBI Demo Rancher
+##
+service:
+  type: ClusterIP
+  port: 3000
+ingress:
+  enabled: true
+  annotations:
+    # kubernetes.io/ingress.class: nginx
+    # kubernetes.io/tls-acme: "true"
+  hosts:
+    - host: chemotion.134.176.27.161.nip.io ## deNBI Giessen
+      paths:
+      - path: /
+        backend:
+          service:
+            name: app
+            port:
+              number: 3000
 
   tls: []
   #  - secretName: chart-example-tls
