@@ -77,3 +77,10 @@ questions:
   label: "SFTP Service type"
   show_subquestion_if: "NodePort"
   group: "Services and Load Balancing"
+- variable: service.port
+  default: "22"
+  description: "SFTP Port number"
+  type: string
+  required: true
+  label: "SFTP Service port"
+  group: "Services and Load Balancing"
