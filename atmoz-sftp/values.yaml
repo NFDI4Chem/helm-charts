@@ -2,6 +2,9 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
+## https://github.com/atmoz/sftp/blob/master/README.md
+userstring: "sftp_test:sftp_test:::uploads"
+
 replicaCount: 1
 
 ## String to partially override common.names.fullname template (will maintain the release name)
@@ -50,10 +53,6 @@ persistence:
   ##
   #existingClaim: ""
   #existingClaim: "data-chemotion-postgresql-0"
-
-## https://github.com/atmoz/sftp/blob/master/README.md
-sftp:
-  userstring: "sftp_test:sftp_test:::uploads"
 
 serviceAccount:
   # Specifies whether a service account should be created
