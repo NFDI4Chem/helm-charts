@@ -1,0 +1,15 @@
+apiVersion: v1
+entries:
+  atmoz-sftp:
+  - apiVersion: v2
+    appVersion: 1.16.0
+    created: "2021-03-14T17:21:17.716185793+01:00"
+    description: A Helm chart for SFTP
+    digest: df8a868a841286fcdc7f510effd224b1f5330ff3f66cd51ff75d014a375c487a
+    icon: https://raw.githubusercontent.com/atmoz/sftp/master/openssh.png
+    name: atmoz-sftp
+    type: application
+    urls:
+    - https://nfdi4chem.github.io/helm-charts/atmoz-sftp-0.1.1.tgz
+    version: 0.1.1
+generated: "2021-03-14T17:21:17.715191985+01:00"
