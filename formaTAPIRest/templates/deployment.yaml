@@ -45,8 +45,26 @@ spec:
             httpGet:
               path: /formaTAPIRest/v1/openapi.json
               port: http
+          volumeMounts:
+          - name: conversion
+            mountPath: /data
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+{{- if .Values.persistence.enabled }}
+        - name: conversion
+          persistentVolumeClaim:
+{{- if .Values.persistence.existingClaim }}
+{{- with .Values.persistence.existingClaim }}
+            claimName: {{ tpl . $ }}
+{{- end }}
+{{- else }}
+            claimName: pvc-conversion
+{{- end }}
+{{- else if not .Values.persistence.enabled }}
+        - name: upload
+          emptyDir: {}
+{{- end }}
       {{- with .Values.nodeSelector }}
       nodeSelector:
         {{- toYaml . | nindent 8 }}
