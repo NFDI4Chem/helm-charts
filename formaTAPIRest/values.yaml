@@ -24,8 +24,8 @@ serviceAccount:
   name: ""
 
 ## Coming from https://github.com/galaxyproject/galaxy-helm/blob/master/galaxy/values.yaml
-rbac:
-  enabled: true
+#rbac:
+#  enabled: true
 
 podAnnotations: {}
 
