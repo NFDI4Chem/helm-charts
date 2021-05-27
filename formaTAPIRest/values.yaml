@@ -6,7 +6,7 @@ replicaCount: 1
 
 image:
   repository: nfdi4chem/formatapirest
-  pullPolicy: IfNotPresent
+  pullPolicy: Always # IfNotPresent
   # Overrides the image tag whose default is the chart appVersion.
   tag: "latest"
 
@@ -22,6 +22,10 @@ serviceAccount:
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
   name: ""
+
+## Coming from https://github.com/galaxyproject/galaxy-helm/blob/master/galaxy/values.yaml
+rbac:
+  enabled: true
 
 podAnnotations: {}
 

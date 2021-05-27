@@ -1,0 +1,34 @@
+{{ if .Values.rbac.enabled }}
+kind: Role
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  namespace: {{ .Release.Namespace }}
+  name: {{ include "formaTAPIRest.fullname" . }}-role-pod-jobs
+  labels:
+    {{- include "formaTAPIRest.labels" . | nindent 4 }}
+rules:
+- apiGroups: [""]
+  resources: ["pods", "pods/log"]
+  verbs: ["get", "list", "watch"]
+- apiGroups: ["batch", "extensions"]
+  resources: ["jobs"]
+  verbs: ["get", "list", "watch", "create", "update", "patch", "delete"]
+- apiGroups: ["", "networking.k8s.io", "extensions"]
+  resources: ["services", "ingresses"]
+  verbs: ["get", "list", "watch", "create", "delete"]
+---
+kind: RoleBinding
+apiVersion: rbac.authorization.k8s.io/v1
+metadata:
+  name: {{ include "formaTAPIRest.fullname" . }}-batch-ops
+  labels:
+    {{- include "formaTAPIRest.labels" . | nindent 4 }}
+subjects:
+- kind: ServiceAccount
+  name: {{ include "formaTAPIRest.serviceAccountName" . }}
+  namespace: {{ .Release.Namespace }}
+roleRef:
+  kind: Role
+  name: {{ include "formaTAPIRest.fullname" . }}-role-pod-jobs
+  apiGroup: rbac.authorization.k8s.io
+{{ end }}
