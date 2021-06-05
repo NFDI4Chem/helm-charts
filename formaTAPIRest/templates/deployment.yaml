@@ -11,6 +11,7 @@ spec:
   selector:
     matchLabels:
       {{- include "formaTAPIRest.selectorLabels" . | nindent 6 }}
+  revisionHistoryLimit: 0
   template:
     metadata:
       {{- with .Values.podAnnotations }}
@@ -32,7 +33,14 @@ spec:
           securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
           image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          env:
+            - name: TAPIR_RUNNER
+              value: "kubernetes"
+          command: ["/bin/sh", "-c", "pip3 install pykube-ng ; sleep 9999"]
           imagePullPolicy: {{ .Values.image.pullPolicy }}
+          volumeMounts:
+          - name: conversion
+            mountPath: /data
           ports:
             - name: http
               containerPort: 8080
@@ -45,9 +53,6 @@ spec:
             httpGet:
               path: /formaTAPIRest/v1/openapi.json
               port: http
-          volumeMounts:
-          - name: conversion
-            mountPath: /data
           resources:
             {{- toYaml .Values.resources | nindent 12 }}
       volumes:
@@ -62,7 +67,7 @@ spec:
             claimName: pvc-conversion
 {{- end }}
 {{- else if not .Values.persistence.enabled }}
-        - name: upload
+        - name: conversion
           emptyDir: {}
 {{- end }}
       {{- with .Values.nodeSelector }}
