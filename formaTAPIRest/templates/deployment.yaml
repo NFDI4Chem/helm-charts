@@ -36,7 +36,7 @@ spec:
           env:
             - name: TAPIR_RUNNER
               value: "kubernetes"
-          command: ["/bin/sh", "-c", "pip3 install pykube-ng ; sleep 9999"]
+          # command: ["/bin/sh", "-c", "sleep 9999"] # For debugging kubectl exec and run python3 -m openapi_server manually
           imagePullPolicy: {{ .Values.image.pullPolicy }}
           volumeMounts:
           - name: conversion
