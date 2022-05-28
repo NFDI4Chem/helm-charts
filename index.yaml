@@ -1,0 +1,14 @@
+apiVersion: v1
+entries:
+  formatapirest:
+  - apiVersion: v2
+    appVersion: 0.0.1
+    created: "2022-05-28T09:29:12.485225025Z"
+    description: A Helm chart for formaTAPIRest
+    digest: 229f585c41f684a728aed67b40c781c8fd1e9e4844834f65fbf2d34aec2cab0a
+    name: formatapirest
+    type: application
+    urls:
+    - https://github.com/NFDI4Chem/helm-charts/releases/download/formatapirest-0.1.2/formatapirest-0.1.2.tgz
+    version: 0.1.2
+generated: "2022-05-28T09:29:12.180187119Z"
