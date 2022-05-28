@@ -75,6 +75,7 @@ ingress:
     - host: formatapirest.local
       paths:
       - path: /formaTAPIRest
+        pathType: ImplementationSpecific
         backend:
           serviceName: formatapirest
           servicePort: 8080
