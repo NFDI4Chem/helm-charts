@@ -1,0 +1,23 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ .Values.app.name }}
+  namespace: {{ .Values.app.namespace | default "default" }}
+  annotations:
+    nginx.ingress.kubernetes.io/proxy-body-size: "{{ .Values.APIConnection.maxFileSize }}"
+    nginx.ingress.kubernetes.io/proxy-connect-timeout: "{{ .Values.APIConnection.ConnectionTimeOut }}"
+    nginx.ingress.kubernetes.io/proxy-read-timeout: "{{ .Values.APIConnection.ReadTimeOut }}"
+    nginx.ingress.kubernetes.io/proxy-send-timeout: "{{ .Values.APIConnection.SendTimeOut }}"
+
+spec:
+  ingressClassName: nginx
+  rules:
+    - http:
+        paths:
+          - path: /
+            pathType: Prefix
+            backend:
+              service:
+                name: {{ .Values.app.name }}
+                port:
+                  number: {{ .Values.service.port }}
